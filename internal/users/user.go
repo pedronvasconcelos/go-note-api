@@ -17,7 +17,7 @@ type User struct {
 	isActive     bool
 }
 
-func newUser(firstName, lastName, email string) *User {
+func NewUser(firstName, lastName, email string) *User {
 	return &User{
 		ID:           uuid.New(),
 		FirstName:    firstName,
@@ -30,11 +30,11 @@ func newUser(firstName, lastName, email string) *User {
 	}
 }
 
-func (u *User) isPremium() bool {
+func (u *User) IsPremium() bool {
 	return u.PremiumUntil != nil && u.PremiumUntil.After(time.Now())
 }
 
-func (u *User) activatePremium30Days() {
+func (u *User) ActivatePremium30Days() {
 	now := time.Now()
 	premiumUntil := now.Add(30 * 24 * time.Hour)
 	u.PremiumUntil = &premiumUntil

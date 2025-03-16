@@ -5,6 +5,7 @@ import (
 
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/google/uuid"
+	"github.com/nantestech/note-api/internal/users"
 )
 
 type Claims struct {
@@ -23,21 +24,21 @@ type Config struct {
 	ExpiresInHours int //hours
 }
 
-func GenerateToken(config Config, userID uuid.UUID, name, email string, isPremium bool, premiumUntil string) (string, error) {
+func GenerateToken(config Config, user *users.User) (string, error) {
 	expirationTime := time.Now().Add(time.Hour * time.Duration(config.ExpiresInHours))
 
 	claims := &Claims{
-		Email:        email,
-		Name:         name,
-		UserID:       userID,
-		IsPremium:    isPremium,
-		PremiumUntil: premiumUntil,
+		Email:        user.Email,
+		Name:         user.FirstName + " " + user.LastName,
+		UserID:       user.ID,
+		IsPremium:    user.IsPremium(),
+		PremiumUntil: user.PremiumUntil.Format(time.RFC3339),
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(expirationTime),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
 			Issuer:    config.Issuer,
 			Audience:  []string{config.Audience},
-			ID:        userID.String(),
+			ID:        user.ID.String(),
 		},
 	}
 

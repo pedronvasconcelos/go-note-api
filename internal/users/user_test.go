@@ -15,7 +15,7 @@ func TestNewUser(t *testing.T) {
 	email := "john.doe@example.com"
 
 	// Act
-	user := newUser(firstName, lastName, email)
+	user := NewUser(firstName, lastName, email)
 
 	// Assert
 	assert.NotEqual(t, uuid.Nil, user.ID, "User ID should not be nil")
@@ -57,7 +57,7 @@ func TestIsPremium(t *testing.T) {
 			user := &User{PremiumUntil: tt.premiumUntil}
 
 			// Act
-			result := user.isPremium()
+			result := user.IsPremium()
 
 			// Assert
 			assert.Equal(t, tt.expectedResult, result)
@@ -67,14 +67,14 @@ func TestIsPremium(t *testing.T) {
 
 func TestActivatePremium30Days(t *testing.T) {
 	// Arrange
-	user := newUser("Jane", "Doe", "jane.doe@example.com")
+	user := NewUser("Jane", "Doe", "jane.doe@example.com")
 	initialUpdateTime := user.UpdatedAt
 
 	// Make sure we wait a tiny bit to ensure UpdatedAt changes
 	time.Sleep(1 * time.Millisecond)
 
 	// Act
-	user.activatePremium30Days()
+	user.ActivatePremium30Days()
 
 	// Assert
 	assert.NotNil(t, user.PremiumUntil, "PremiumUntil should not be nil")
@@ -84,7 +84,7 @@ func TestActivatePremium30Days(t *testing.T) {
 	assert.LessOrEqual(t, timeDiff.Abs(), 2*time.Second, "PremiumUntil should be approximately 30 days from now")
 
 	assert.True(t, user.UpdatedAt.After(initialUpdateTime), "UpdatedAt should be updated")
-	assert.True(t, user.isPremium(), "User should be premium after activation")
+	assert.True(t, user.IsPremium(), "User should be premium after activation")
 }
 
 // Helper function to create time pointer
