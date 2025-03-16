@@ -9,8 +9,10 @@ type JWTConfig struct {
 
 type AuthResponse struct {
 	Token          string `json:"token"`
-	Name           string `json:"name"`
+	FirstName      string `json:"firstName"`
+	LastName       string `json:"lastName"`
 	Email          string `json:"email"`
 	ProfilePicture string `json:"profilePicture"`
 	Provider       string `json:"provider"`
+	UserId         string `json:"userId"`
 }
