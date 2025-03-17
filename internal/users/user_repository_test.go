@@ -84,7 +84,6 @@ func (m *MockDB) First(dest interface{}, conds ...interface{}) *MockDB {
 	if !ok {
 		return m
 	}
-	panic("not implemented")
 	return m
 }
 

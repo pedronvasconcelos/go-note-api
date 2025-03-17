@@ -1,0 +1,74 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: note-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: note
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/migrations:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - note-network
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: note-api
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=note
+      - DB_SSL_MODE=disable
+      - JWT_SECRET=your-secret-key-replace-in-production
+      - JWT_ISSUER=note
+      - JWT_AUDIENCE=note-web
+      - JWT_EXPIRES_IN=7
+      - GOOGLE_CLIENT_ID=
+      - GOOGLE_CLIENT_SECRET= 
+      - LLM_API_KEY=
+      - LLM_BASE_URL=https://generativelanguage.googleapis.com/
+      - LLM_MODEL_NAME=gemini-2.0-flash-lite
+      - PORT=8080
+    restart: unless-stopped
+    networks:
+      - note-network
+
+  # Add PgAdmin for database management (optional)
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: note-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@note.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+    networks:
+      - note-network
+
+volumes:
+  postgres_data:
+
+networks:
+  note-network:
+    driver: bridge 

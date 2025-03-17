@@ -18,7 +18,7 @@ type GoogleAuthService interface {
 }
 
 type googleAuthService struct {
-	config     *GoogleAuthConfig
+	config     GoogleAuthConfig
 	jwtConfig  jwt.Config
 	userRepo   users.Repository
 	httpClient *http.Client
@@ -38,7 +38,7 @@ func (g *googleAuthService) GetAuth(ctx context.Context, token string) (*GoogleT
 	return payload, nil
 }
 
-func NewGoogleAuthService(config *GoogleAuthConfig, jwtConfig jwt.Config, userRepo users.Repository) GoogleAuthService {
+func NewGoogleAuthService(config GoogleAuthConfig, jwtConfig jwt.Config, userRepo users.Repository) GoogleAuthService {
 	return &googleAuthService{
 		config:     config,
 		jwtConfig:  jwtConfig,

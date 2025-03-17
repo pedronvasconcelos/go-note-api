@@ -15,7 +15,7 @@ type GoogleAuthHandler struct {
 	jwtConfig         jwt.Config
 }
 
-func newGoogleAuthHandler(googleAuthService GoogleAuthService, userRepo users.Repository, jwtConfig jwt.Config) *GoogleAuthHandler {
+func NewGoogleAuthHandler(googleAuthService GoogleAuthService, userRepo users.Repository, jwtConfig jwt.Config) *GoogleAuthHandler {
 	return &GoogleAuthHandler{
 		googleAuthService: googleAuthService,
 		userRepo:          userRepo,
